@@ -18,6 +18,14 @@ public class FSM {
         this.transitions = new HashMap<>();
         this.initialState = null;
     }
+    public void addTransition(char symbol, String currentState,String nextState) {
+        HashMap<Character, String> transition;
+        transition.putIfAbsent(currentState,new HashMap<>());
+        transition.get(currentState).put(symbol,nextState);
+    }
+    public String execute(String input){
+        return "";
+    }
 
 }
 
