@@ -24,7 +24,15 @@ public class FSM {
         transition.get(currentState).put(symbol,nextState);
     }
     public String execute(String input){
-        return "";
+        StringBuilder result = new StringBuilder();
+        String currentState = initialState;
+        result.append(currentState);
+
+        for (char charList : input.toCharArray()) {
+            if (!symbols.contains(charList)) {
+                return result + "\nError: Invalid Symbol '"+charList+"'\nNO";
+            }
+        }
     }
 
 }
