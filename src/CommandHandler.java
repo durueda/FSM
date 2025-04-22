@@ -21,5 +21,5 @@ public class CommandHandler {
         if (args.endsWith(";")) {
             args = args.substring(0, args.length() - 1).trim();
         }
-}
+    }
 
