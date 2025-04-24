@@ -42,7 +42,7 @@ public class FSM {
 
             if (initialState == null) {
                 initialState = state;
-            }
+            } 
         }
     }
     /*The purpose of the setSymbols and setStates methods is to validate user input (detect invalid symbols/states),
