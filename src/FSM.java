@@ -42,7 +42,7 @@ public class FSM {
 
             if (initialState == null) {
                 initialState = state;
-            } 
+            }
         }
     }
     /*The purpose of the setSymbols and setStates methods is to validate user input (detect invalid symbols/states),
@@ -84,11 +84,49 @@ public class FSM {
     }
     //Strings that are not valid according to FR8 are skipped with a warning.
 
-    /*public void addTransition(char symbol, String currentState,String nextState) {
-        HashMap<Character, String> transition;
-        transition.putIfAbsent(currentState,new HashMap<>());
-        transition.get(currentState).put(symbol,nextState);
-    }*/
+    public void addTransitions(List<String[]> transitionList) {
+        for (String[] parts : transitionList) {
+            if (parts.length != 3) {
+                System.out.println("Error: transition must have 3 elements");
+                continue;
+            }
+
+            String symStr = parts[0];
+            String current = parts[1].toUpperCase();
+            String next = parts[2].toUpperCase();
+            //symbol control
+            if (symStr.length() != 1 || !Character.isLetterOrDigit(symStr.charAt(0))) {
+                System.out.println("Error: Invalid symbol " + symStr);
+                continue;
+            }
+
+            char symbol = Character.toLowerCase(symStr.charAt(0));
+            if (!symbols.contains(symbol)) {
+                System.out.println("Error: invalid symbol " + symbol);
+                continue;
+            }
+            //state control
+            if (!states.contains(current)) {
+                System.out.println("Error: invalid state " + current);
+                continue;
+            }
+
+            if (!states.contains(next)) {
+                System.out.println("Error: invalid state " + next);
+                continue;
+            }
+            //add transitions
+            transitions.putIfAbsent(current, new HashMap<>());
+
+            if (transitions.get(current).containsKey(symbol)) {
+                System.out.println("Warning: transition already exists for <" + symbol + "," + current + ">, overriding.");
+            }
+
+            transitions.get(current).put(symbol, next);
+        }
+    }
+    //Each transition will be in the format: [symbol, currentState, nextState].
+    //A code that complies with FR9
 
     public String execute(String input){
         StringBuilder result = new StringBuilder();
