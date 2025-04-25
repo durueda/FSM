@@ -92,16 +92,36 @@ public class FSM {
 
     public String execute(String input){
         StringBuilder result = new StringBuilder();
+
+        if(initialState != null) {
+            return "Error: Initial state is not set.";
+        }
+
         String currentState = initialState;
         result.append(currentState);
 
         for (char charList : input.toCharArray()) {
-            if (!symbols.contains(charList)) {
+            char normalized = Character.toLowerCase(charList);
+            if (!symbols.contains(normalized)) {
                 return result + "\nError: Invalid Symbol '"+charList+"'\nNO";
             }
+            //Valid symbols, checking for transitions
+            if(!transitions.containsKey(currentState) || !transitions.get(currentState).containsKey(normalized)) {
+                return result + "\nNO";
+            }
+            //Valid transition
+            currentState = transitions.get(currentState).get(normalized);
+            //New state added
+            result.append(" ").append(currentState);
         }
-        return currentState;
+        if(finalStates.contains(currentState)) {
+            result.append("\nYES");
+        } else {
+            result.append("\nNO");
+        }
+        return result.toString();
     }
+
 
 }
 
