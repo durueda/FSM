@@ -1,4 +1,5 @@
-
+import java.util.List;
+import java.util.Arrays;
 public class CommandHandler {
         private FSM fsm;
         private Logger logger;
@@ -25,6 +26,40 @@ public class CommandHandler {
             args = args.substring(0, args.length() - 1).trim();
         }//We end the command line with ; but we need to remove ; part when we move on to the process.
 
-    }}
+        switch (command) {
+            case "SYMBOLS":
+            if (args.isEmpty()) {
+                return "Current symbols: " + fsm.getSymbols();
+            } else {
+                List<String> symbols = Arrays.asList(args.split("\\s+"));
+                fsm.setSymbols(symbols);
+                return "Symbols updated.";
+            }
+            case "STATES":
+                if (args.isEmpty()) {
+                    return "Current states: " + fsm.getStates();
+                } else {
+                    List<String> states = Arrays.asList(args.split("\\s+"));
+                    fsm.setStates(states);
+                    return "States updated.";
+                }
+            case "INITIAL-STATE":
+                if (args.isEmpty()) {
+                    return "Error: No initial state provided.";
+                } else {
+                    fsm.setInitialState(args);
+                    return "Initial state set to " + args.toUpperCase();
+                }
+                case "FINAL-STATES":
+                if (args.isEmpty()) {
+                    return "Error: No final states provided.";
+                } else {
+                    List<String> finals = Arrays.asList(args.split("\\s+"));
+                    fsm.setFinalStates(finals);
+                    return "Final states updated.";
+                }
+
+
+        }}
 
 

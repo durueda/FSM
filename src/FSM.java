@@ -9,6 +9,12 @@ public class FSM {
     private Set<String> finalStates;
     private Map<String, Map<Character, String>> transitions;
 
+    public Set<Character> getSymbols() {
+        return new HashSet<>(symbols);
+    }
+    public Set<String> getStates() {
+        return new HashSet<>(states);
+    }
 
     public FSM() {
         this.symbols = new HashSet<>();
