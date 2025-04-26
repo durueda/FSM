@@ -1,5 +1,7 @@
 import java.util.*;
-
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 public class FSM {
     private Set<Character> symbols;
     private Set<String> states;
@@ -158,6 +160,21 @@ public class FSM {
             result.append("\nNO");
         }
         return result.toString();
+    }
+    public void compileToFile(String fileName) {
+        try{
+            FileOutputStream fileOut = new FileOutputStream(fileName);
+            ObjectOutputStream output = new ObjectOutputStream(fileOut);
+
+            //We write the FSM object to the file.
+            output.writeObject(this);
+            output.close();
+            fileOut.close();
+
+            System.out.println("FSM successfully compiled to file: " + fileName);
+        } catch (IOException ex) {
+            System.out.println("Error compiling FSM to file: " + ex.getMessage());
+        }
     }
 
 
