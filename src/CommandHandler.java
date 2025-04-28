@@ -1,13 +1,14 @@
 import java.util.List;
 import java.util.Arrays;
 public class CommandHandler {
-        private FSM fsm;
-        private Logger logger;
+    private FSM fsm;
+    private Logger logger;
 
-        public CommandHandler(FSM fsm, Logger logger) {
-            this.fsm = fsm;
-            this.logger = logger;
-        }
+    public CommandHandler(FSM fsm, Logger logger) {
+        this.fsm = fsm;
+        this.logger = logger;
+    }
+
     public String processCommand(String commandLine) {
         int commentIndex = commandLine.indexOf(';');
         //We check if there is a ';' in the command line coming from the user.
@@ -28,13 +29,13 @@ public class CommandHandler {
 
         switch (command) {
             case "SYMBOLS":
-            if (args.isEmpty()) {
-                return "Current symbols: " + fsm.getSymbols();
-            } else {
-                List<String> symbols = Arrays.asList(args.split("\\s+"));
-                fsm.setSymbols(symbols);
-                return "Symbols updated.";
-            }
+                if (args.isEmpty()) {
+                    return "Current symbols: " + fsm.getSymbols();
+                } else {
+                    List<String> symbols = Arrays.asList(args.split("\\s+"));
+                    fsm.setSymbols(symbols);
+                    return "Symbols updated.";
+                }
             case "STATES":
                 if (args.isEmpty()) {
                     return "Current states: " + fsm.getStates();
@@ -50,7 +51,7 @@ public class CommandHandler {
                     fsm.setInitialState(args);
                     return "Initial state set to " + args.toUpperCase();
                 }
-                case "FINAL-STATES":
+            case "FINAL-STATES":
                 if (args.isEmpty()) {
                     return "Error: No final states provided.";
                 } else {
@@ -60,6 +61,6 @@ public class CommandHandler {
                 }
 
 
-        }}
-
-
+        }
+    }
+}
