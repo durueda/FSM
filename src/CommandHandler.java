@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 public class CommandHandler {
@@ -59,8 +60,38 @@ public class CommandHandler {
                     fsm.setFinalStates(finals);
                     return "Final states updated.";
                 }
+            case "TRANSITIONS":
+                if (args.isEmpty()) {
+                    return "Error: No transitions provided.";
+                } else {
+                    List<String[]> transitionList = new ArrayList<>();
+                    String[] transitions = args.split(",");
+                    for (String t : transitions) {
+                        String[] partsT = t.trim().split("\\s+");
+                        transitionList.add(partsT);
+                    }
+                    fsm.addTransitions(transitionList);
+                    return "Transitions updated.";
+                }
+            case "EXECUTE":
+                if (args.isEmpty()) {
+                    return "Error: No input string provided to execute.";
+                } else {
+                    return fsm.execute(args);
+                }
+                case "PRINT":
+                return fsm.toString();
+                case "CLEAR":
+                fsm.clear();  // Resets all FSM data
+                return "FSM cleared.";
 
-
+                case "COMPILE":
+                if (args.isEmpty()) {
+                    return "Error: No file name provided for compilation.";
+                } else {
+                    fsm.compileToFile(args);
+                    return "FSM compiled to " + args;
+                }
         }
     }
 }
