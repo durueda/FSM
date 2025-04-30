@@ -188,6 +188,17 @@ public class FSM {
     }
     //A code that complies with FR10
 
+    public void clear() {
+        symbols.clear();
+        states.clear();
+        finalStates.clear();
+        transitions.clear();
+        initialState = null;
+
+        System.out.println("FSM cleared.");
+    }
+    //A code that complies with FR12
+
     public String execute(String input){
         StringBuilder result = new StringBuilder();
 
