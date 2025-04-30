@@ -1,7 +1,6 @@
+import java.io.*;
 import java.util.*;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
+
 public class FSM {
     private Set<Character> symbols;
     private Set<String> states;
@@ -180,6 +179,30 @@ public class FSM {
             System.out.println("FSM successfully compiled to file: " + fileName);
         } catch (IOException ex) {
             System.out.println("Error compiling FSM to file: " + ex.getMessage());
+        }
+    }
+    public void loadFromFile(String fileName) {
+        try{
+            //Reading the file
+            FileInputStream fileIn = new FileInputStream(fileName);
+
+            //Binary Reading
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            FSM loadedFSM = (FSM) in.readObject();
+
+            //Updating FSM datas
+            this.symbols = loadedFSM.symbols;
+            this.states = loadedFSM.states;
+            this.initialState = loadedFSM.initialState;
+            this.finalStates = loadedFSM.finalStates;
+            this.transitions = loadedFSM.transitions;
+
+            in.close();
+
+            System.out.println("FSM successfully loaded from file: " + fileName);
+
+        } catch (IOException | ClassNotFoundException e){
+            System.out.println("Error loading FSM from file: " + e.getMessage());
         }
     }
 
