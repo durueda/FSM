@@ -135,6 +135,59 @@ public class FSM {
     //Each transition will be in the format: [symbol, currentState, nextState].
     //A code that complies with FR9
 
+
+    public void print(String filename) {
+        if (filename == null || filename.trim().isEmpty()) {
+            System.out.println("Error: filename is not valid.");
+            return;
+        }
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
+
+            writer.print("SYMBOLS");
+            for (char s : symbols) {
+                writer.print(" " + s);
+            }
+            writer.println(";");
+
+            writer.print("STATES");
+            for (String state : states) {
+                writer.print(" " + state);
+            }
+            writer.println(";");
+
+            if (initialState != null) {
+                writer.println("INITIAL-STATE " + initialState + ";");
+            }
+
+            if (!finalStates.isEmpty()) {
+                writer.print("FINAL-STATES");
+                for (String f : finalStates) {
+                    writer.print(" " + f);
+                }
+                writer.println(";");
+            }
+
+            writer.print("TRANSITIONS ");
+            boolean first = true;
+            for (String from : transitions.keySet()) {
+                for (char symbol : transitions.get(from).keySet()) {
+                    String to = transitions.get(from).get(symbol);
+                    if (!first) writer.print(", ");
+                    writer.print(symbol + " " + from + " " + to);
+                    first = false;
+                }
+            }
+            writer.println(";");
+
+            System.out.println("FSM written to file: " + filename);
+
+        } catch (IOException e) {
+            System.out.println("Error: Cannot write to file " + filename + " - " + e.getMessage());
+        }
+    }
+    //A code that complies with FR10
+
     public String execute(String input){
         StringBuilder result = new StringBuilder();
 
