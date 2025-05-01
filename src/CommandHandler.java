@@ -80,7 +80,8 @@ public class CommandHandler {
                     return fsm.execute(args);
                 }
                 case "PRINT":
-                return fsm.toString();
+                    fsm.print(args.isEmpty() ? null : args); // if no filename, print to screen
+                    return "FSM printed.";
                 case "CLEAR":
                 fsm.clear();  // Resets all FSM data
                 return "FSM cleared.";
@@ -91,6 +92,13 @@ public class CommandHandler {
                 } else {
                     fsm.compileToFile(args);
                     return "FSM compiled to " + args;
+                }
+            case "LOAD":
+                if (args.isEmpty()) {
+                    return "Error: No file name provided for loading.";
+                } else {
+                    fsm.loadFromFile(args);
+                    return "FSM loaded from file: " + args;
                 }
         }
     }
