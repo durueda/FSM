@@ -100,6 +100,20 @@ public class CommandHandler {
                     fsm.loadFromFile(args);
                     return "FSM loaded from file: " + args;
                 }
+            case "LOG":
+                if (args.isEmpty()) {
+                    logger.stopLogging();
+                    return "Logging stopped.";
+                } else {
+                    logger.startLogging(args);
+                    return "Logging started to " + args;
+                }
+
+            case "EXIT":
+                return "TERMINATED BY USER";
+
+            default:
+                return "Warning: Unknown command: " + command;
         }
     }
 }
