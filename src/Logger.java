@@ -1,21 +1,48 @@
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalDateTime;
 
 public class Logger {
-    private String logFileName;
+    private PrintWriter writer;
+    private boolean isLogging;
 
-    public Logger(String logFileName) {
-        this.logFileName = logFileName;
+    public Logger() {
+        this.writer = null;
+        this.isLogging = false;
     }
 
-    public void log(String message) {
-        try (PrintWriter out = new PrintWriter(new FileWriter(logFileName, true))) {
-            LocalDateTime now = LocalDateTime.now();
-            out.println("[" + now + "] " + message);
+    public void startLogging(String fileName) {
+        stopLogging();
+        try {
+            writer = new PrintWriter(new BufferedWriter(new FileWriter(fileName, true)));
+            isLogging = true;
         } catch (IOException e) {
-            System.out.println("Error writing to log file: " + e.getMessage());
+            System.err.println("Logger Error: Unable to open file for logging -> " + fileName);
         }
+    }
+
+    public void stopLogging() {
+        if (writer != null) {
+            writer.close();
+            writer = null;
+        }
+        isLogging = false;
+    }
+
+    public void log(String commandLine, String output) {
+        if (!isLogging || writer == null) {
+            return;
+        }
+
+        writer.println("> " + commandLine);
+        if (output != null && !output.trim().isEmpty()) {
+            writer.println(output.trim());
+        }
+        writer.flush();
+    }
+
+    public boolean isLogging() {
+        return isLogging;
     }
 }
