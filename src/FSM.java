@@ -218,7 +218,7 @@ public class FSM {
     public String execute(String input){
         StringBuilder result = new StringBuilder();
 
-        if(initialState != null) {
+        if(initialState == null) {
             return "Error: Initial state is not set.";
         }
 
@@ -228,15 +228,21 @@ public class FSM {
         for (char charList : input.toCharArray()) {
             char normalized = Character.toLowerCase(charList);
             if (!symbols.contains(normalized)) {
-                return result + "\nError: Invalid Symbol '"+charList+"'\nNO";
+                result.append("\nError: Invalid Symbol '"+charList+"'\nNO");
+                return result.toString();
             }
             //Valid symbols, checking for transitions
-            if(!transitions.containsKey(currentState) || !transitions.get(currentState).containsKey(normalized)) {
-                return result + "\nNO";
+            if(!transitions.containsKey(currentState)) {
+                result.append("\nError: No transitions defined from state '" + currentState + "'\nNO");
+                return result.toString();
             }
-            //Valid transition
-            currentState = transitions.get(currentState).get(normalized);
-            //New state added
+            Map<Character, String> transitionMap = transitions.get(currentState);
+
+            if (!transitionMap.containsKey(normalized)) {
+                result.append("\nError: No transition for symbol '" + normalized + "' from state '" + currentState + "'\nNO");
+                return result.toString();
+            }
+            currentState = transitionMap.get(normalized);
             result.append(" ").append(currentState);
         }
         if(finalStates.contains(currentState)) {
