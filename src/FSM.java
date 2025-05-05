@@ -135,70 +135,44 @@ public class FSM {
     //Each transition will be in the format: [symbol, currentState, nextState].
     //A code that complies with FR9
 
-    public void print(String filename) {
-        boolean toFile = (filename != null && !filename.trim().isEmpty());
+    public String print() {
+        StringBuilder printString = new StringBuilder();
+        printString.append("SYMBOLS");
+        for (char symbol : symbols) {
+            printString.append(" ").append(symbol);
+        }
+        printString.append(";\n").append("STATES");
+        for (String state : states) {
+            printString.append(" ").append(state);
+        }
+        printString.append(";\n");
 
-        Writer writer = null;
+        if (initialState != null && !initialState.isEmpty()) {
+            printString.append("INITIAL-STATE ").append(initialState).append(";\n");
+        }
 
-        try {
-            if (toFile) {
-                writer = new BufferedWriter(new FileWriter(filename));
-            } else {
-                writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        if (!finalStates.isEmpty()) {
+            printString.append("FINAL-STATES");
+            for (String state : finalStates) {
+                printString.append(" ").append(state);
             }
+            printString.append(";\n");
+        }
 
-            writer.write("SYMBOLS");
-            for (char symbol : symbols) {
-                writer.write(" " + symbol);
-            }
-            writer.write(";\n");
-
-            writer.write("STATES");
-            for (String state : states) {
-                writer.write(" " + state);
-            }
-            writer.write(";\n");
-
-            if (initialState != null && !initialState.isEmpty()) {
-                writer.write("INITIAL-STATE " + initialState + ";\n");
-            }
-
-            if (!finalStates.isEmpty()) {
-                writer.write("FINAL-STATES");
-                for (String state : finalStates) {
-                    writer.write(" " + state);
+        printString.append("TRANSITIONS");
+        boolean first = true;
+        for (String fromState : transitions.keySet()) {
+            for (char symbol : transitions.get(fromState).keySet()) {
+                String toState = transitions.get(fromState).get(symbol);
+                if (!first) {
+                    printString.append(",");
                 }
-                writer.write(";\n");
-            }
-
-            writer.write("TRANSITIONS");
-            boolean first = true;
-            for (String fromState : transitions.keySet()) {
-                for (char symbol : transitions.get(fromState).keySet()) {
-                    String toState = transitions.get(fromState).get(symbol);
-                    if (!first) {
-                        writer.write(",");
-                    }
-                    writer.write(" " + symbol + " " + fromState + " " + toState);
-                    first = false;
-                }
-            }
-            writer.write(";\n");
-
-        } catch (IOException e) {
-            System.out.println("Error: Cannot write output — " + e.getMessage());
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-                if (toFile) {
-                    System.out.println("FSM successfully written to file: " + filename);
-                }
-            } catch (IOException e) {
-                System.out.println("Error closing writer: " + e.getMessage());
+                printString.append(" ").append(symbol).append(" ").append(fromState).append(" ").append(toState);
+                first = false;
             }
         }
+        printString.append(";\n");
+        return printString.toString();
     }
     //A code that complies with FR10
     //print() can write to both file and screen
