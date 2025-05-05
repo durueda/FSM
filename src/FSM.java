@@ -62,9 +62,21 @@ public class FSM implements Serializable{
         }
 
         String normalized = state.toUpperCase();
+
         if (!states.contains(normalized)) {
             System.out.println("Warning: " + normalized + " was not previously declared as a state");
             states.add(normalized);
+        }
+
+        if (initialState != null) {
+            if (initialState.equals(normalized)) {
+                System.out.println("Warning: Initial state is already set to " + initialState + ".");
+                return;
+            } else {
+                System.out.println("Warning: Initial state was previously set to " + initialState + ".");
+            }
+        } else {
+            System.out.println("Initial state set to " + normalized);
         }
 
         initialState = normalized;
