@@ -16,20 +16,26 @@ public class Main {
             String fileName = args[0];
             try(BufferedReader reader = new BufferedReader(new FileReader(fileName))){
                 String line;
-                while((line = reader.readLine()) != null){
-                    if(line.trim().isEmpty()) continue;
+                StringBuilder commandBuilder = new StringBuilder();
+                while ((line = reader.readLine()) != null) {
+                    if (line.trim().isEmpty()) continue;
 
-                    System.out.println("> " + line);
-                    String reply = commands.processCommand(line);
+                    commandBuilder.append(line.trim()).append(" ");
+                    if (line.trim().endsWith(";")) {
+                        String fullCommand = commandBuilder.toString().trim();
+                        System.out.println("> " + fullCommand);
+                        String reply = commands.processCommand(fullCommand);
+                        logger.log(fullCommand, reply);
 
-                    //Logger
-                    logger.log(line,reply);
-                    if(reply != null && !reply.trim().isEmpty()){
-                        System.out.println(reply);
-                    }
+                        if (reply != null && !reply.trim().isEmpty()) {
+                            System.out.println(reply);
+                        }
 
-                    if(line.trim().equalsIgnoreCase("EXIT;")){
-                        return;
+                        if (fullCommand.equalsIgnoreCase("EXIT;")) {
+                            return;
+                        }
+
+                        commandBuilder.setLength(0); // temizle
                     }
                 }
             } catch (IOException e) {
