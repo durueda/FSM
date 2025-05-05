@@ -1,3 +1,7 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
@@ -79,9 +83,20 @@ public class CommandHandler {
                 } else {
                     return fsm.execute(args);
                 }
-                case "PRINT":
-                    fsm.print(args.isEmpty() ? null : args); // if no filename, print to screen
-                    return "FSM printed.";
+            case "PRINT":
+                if (args.isEmpty()) {
+                    return fsm.print();
+                } else {
+                    String printResult = fsm.print();
+                    try {
+                        Writer writer = new BufferedWriter(new FileWriter(args));
+                        writer.write(printResult);
+                        printResult = printResult + "\nFSM successfully written to file: " + args;
+                        writer.close();
+                        return printResult;
+                    } catch (IOException e) {
+                        return "Error: Cannot write output — " + e.getMessage();
+                    }}
                 case "CLEAR":
                 fsm.clear();  // Resets all FSM data
                 return "FSM cleared.";
