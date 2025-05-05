@@ -201,7 +201,7 @@ public class FSM implements Serializable{
         for (char charList : input.toCharArray()) {
             char normalized = Character.toLowerCase(charList);
             if (!symbols.contains(normalized)) {
-                result.append("\nError: Invalid Symbol '"+charList+"'\nNO");
+                result.append("\nError: Invalid Symbol '" + charList + "'\nNO");
                 return result.toString();
             }
             //Valid symbols, checking for transitions
