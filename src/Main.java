@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         //Opening Message
-        System.out.println("FSM DESIGNER 1.0"+LocalDateTime.now());
+        System.out.println("FSM DESIGNER 1.0 "+ LocalDateTime.now());
 
         //Creating Objects
         FSM fsm = new FSM();
@@ -39,7 +39,7 @@ public class Main {
         //Command Line Interaction
         Scanner sc = new Scanner(System.in);
         while(true){
-            System.out.println("? ");
+            System.out.print("? ");
             String input = sc.nextLine();
             String reply = commands.processCommand(input);
 

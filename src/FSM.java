@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class FSM {
+public class FSM implements Serializable{
     private Set<Character> symbols;
     private Set<String> states;
     private String initialState;
@@ -211,7 +211,6 @@ public class FSM {
         transitions.clear();
         initialState = null;
 
-        System.out.println("FSM cleared.");
     }
     //A code that complies with FR12
 
@@ -261,8 +260,6 @@ public class FSM {
             output.writeObject(this);
             output.close();
             fileOut.close();
-
-            System.out.println("FSM successfully compiled to file: " + fileName);
         } catch (IOException ex) {
             System.out.println("Error compiling FSM to file: " + ex.getMessage());
         }
@@ -284,8 +281,6 @@ public class FSM {
             this.transitions = loadedFSM.transitions;
 
             in.close();
-
-            System.out.println("FSM successfully loaded from file: " + fileName);
 
         } catch (IOException | ClassNotFoundException e){
             System.out.println("Error loading FSM from file: " + e.getMessage());
