@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class FSM {
+public class FSM implements Serializable{
     private Set<Character> symbols;
     private Set<String> states;
     private String initialState;
@@ -185,14 +185,13 @@ public class FSM {
         transitions.clear();
         initialState = null;
 
-        System.out.println("FSM cleared.");
     }
     //A code that complies with FR12
 
     public String execute(String input){
         StringBuilder result = new StringBuilder();
 
-        if(initialState != null) {
+        if(initialState == null) {
             return "Error: Initial state is not set.";
         }
 
@@ -202,15 +201,21 @@ public class FSM {
         for (char charList : input.toCharArray()) {
             char normalized = Character.toLowerCase(charList);
             if (!symbols.contains(normalized)) {
-                return result + "\nError: Invalid Symbol '"+charList+"'\nNO";
+                result.append("\nError: Invalid Symbol '"+charList+"'\nNO");
+                return result.toString();
             }
             //Valid symbols, checking for transitions
-            if(!transitions.containsKey(currentState) || !transitions.get(currentState).containsKey(normalized)) {
-                return result + "\nNO";
+            if(!transitions.containsKey(currentState)) {
+                result.append("\nError: No transitions defined from state '" + currentState + "'\nNO");
+                return result.toString();
             }
-            //Valid transition
-            currentState = transitions.get(currentState).get(normalized);
-            //New state added
+            Map<Character, String> transitionMap = transitions.get(currentState);
+
+            if (!transitionMap.containsKey(normalized)) {
+                result.append("\nError: No transition for symbol '" + normalized + "' from state '" + currentState + "'\nNO");
+                return result.toString();
+            }
+            currentState = transitionMap.get(normalized);
             result.append(" ").append(currentState);
         }
         if(finalStates.contains(currentState)) {
@@ -229,8 +234,6 @@ public class FSM {
             output.writeObject(this);
             output.close();
             fileOut.close();
-
-            System.out.println("FSM successfully compiled to file: " + fileName);
         } catch (IOException ex) {
             System.out.println("Error compiling FSM to file: " + ex.getMessage());
         }
@@ -252,8 +255,6 @@ public class FSM {
             this.transitions = loadedFSM.transitions;
 
             in.close();
-
-            System.out.println("FSM successfully loaded from file: " + fileName);
 
         } catch (IOException | ClassNotFoundException e){
             System.out.println("Error loading FSM from file: " + e.getMessage());
