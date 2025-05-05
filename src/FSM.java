@@ -200,10 +200,10 @@ public class FSM implements Serializable{
     }
     //A code that complies with FR12
 
-    public String execute(String input){
+    public String execute(String input) {
         StringBuilder result = new StringBuilder();
 
-        if(initialState == null) {
+        if (initialState == null) {
             return "Error: Initial state is not set.";
         }
 
@@ -213,28 +213,25 @@ public class FSM implements Serializable{
         for (char charList : input.toCharArray()) {
             char normalized = Character.toLowerCase(charList);
             if (!symbols.contains(normalized)) {
-                result.append("\nError: Invalid Symbol '" + charList + "'\nNO");
-                return result.toString();
-            }
-            //Valid symbols, checking for transitions
-            if(!transitions.containsKey(currentState)) {
-                result.append("\nError: No transitions defined from state '" + currentState + "'\nNO");
+                result.append("\nError: Invalid symbol '" + charList + "' not declared in SYMBOLS.\nNO");
                 return result.toString();
             }
             Map<Character, String> transitionMap = transitions.get(currentState);
-
-            if (!transitionMap.containsKey(normalized)) {
+            if (transitionMap == null || !transitionMap.containsKey(normalized)) {
                 result.append("\nError: No transition for symbol '" + normalized + "' from state '" + currentState + "'\nNO");
                 return result.toString();
             }
+
             currentState = transitionMap.get(normalized);
             result.append(" ").append(currentState);
         }
-        if(finalStates.contains(currentState)) {
+
+        if (finalStates.contains(currentState)) {
             result.append("\nYES");
         } else {
             result.append("\nNO");
         }
+
         return result.toString();
     }
     public void compileToFile(String fileName) {
