@@ -16,26 +16,44 @@ public class Main {
             String fileName = args[0];
             try(BufferedReader reader = new BufferedReader(new FileReader(fileName))){
                 String line;
-                StringBuilder commandBuilder = new StringBuilder();
+                int lineNumber = 0;
+                StringBuilder transitionBuffer = new StringBuilder();
+                boolean collectingTransitions = false;
                 while ((line = reader.readLine()) != null) {
+                    lineNumber++;
+                    line = line.trim();
                     if (line.trim().isEmpty()) continue;
 
-                    commandBuilder.append(line.trim()).append(" ");
-                    if (line.trim().endsWith(";")) {
-                        String fullCommand = commandBuilder.toString().trim();
-                        System.out.println("> " + fullCommand);
-                        String reply = commands.processCommand(fullCommand);
-                        logger.log(fullCommand, reply);
-
-                        if (reply != null && !reply.trim().isEmpty()) {
-                            System.out.println(reply);
+                    if (collectingTransitions) {
+                        transitionBuffer.append(" ").append(line);
+                        if (line.endsWith(";")) {
+                            String fullCommand = transitionBuffer.toString();
+                            System.out.println("> " + fullCommand);
+                            String reply = commands.processCommand(fullCommand);
+                            logger.log(fullCommand, reply);
+                            if (reply != null && !reply.trim().isEmpty()) {
+                                System.out.println(reply);
+                            }
+                            collectingTransitions = false;
+                            transitionBuffer.setLength(0);
                         }
+                        continue;
+                    }
+                    //For Multiple Transition Cases
+                    if (line.toUpperCase().startsWith("TRANSITIONS") && !line.endsWith(";")) {
+                        collectingTransitions = true;
+                        transitionBuffer.append(line);
+                        continue;
+                    }
+                    System.out.println("> " + line);
+                    String reply = commands.processCommand(line);
+                    logger.log(line, reply);
+                    if (reply != null && !reply.trim().isEmpty()) {
+                        System.out.println(reply);
+                    }
 
-                        if (fullCommand.equalsIgnoreCase("EXIT;")) {
-                            return;
-                        }
-
-                        commandBuilder.setLength(0); // temizle
+                    if (line.trim().equalsIgnoreCase("EXIT;")) {
+                        return;
                     }
                 }
             } catch (IOException e) {
