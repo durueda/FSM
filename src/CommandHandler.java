@@ -24,9 +24,6 @@ public class CommandHandler {
 
         String[] parts = commandLine.trim().split("\\s+", 2);
         //command line is divided into 2 parts command,arguments(symbols and 1,2,3)
-        if (parts.length == 0 || parts[0].isEmpty()) {
-            return "";
-        }//To not process empty commands or lines consisting of only spaces
         String args = parts.length > 1 ? parts[1].trim() : "";
         //If something is written after the command, we take it as an argument.
         String command = parts[0].toUpperCase();//Since all commands are case-insensitive
@@ -120,13 +117,10 @@ public class CommandHandler {
                 }
             case "LOG":
                 if (args.isEmpty()) {
-                    logger.stopLogging();
-                    return "Logging stopped.";
+                    return logger.stopLogging();
                 } else {
-                    logger.startLogging(args);
-                    return "Logging started to " + args;
+                    return logger.startLogging(args);
                 }
-
             case "EXIT":
                 return "TERMINATED BY USER";
 
@@ -134,20 +128,4 @@ public class CommandHandler {
                 return "Warning: Unknown command: " + command;
         }
     }
-    public String processCommand(String commandLine, int lineNumber) {
-        String response = processCommand(commandLine);
-
-        if (response == null || response.isBlank()) {
-            return "";
-        }
-        StringBuilder result = new StringBuilder();
-        String[] lines = response.split("\n");
-        for (String line : lines) {
-            if (!line.trim().isEmpty()) {
-                result.append("Line ").append(lineNumber).append(": ").append(line).append("\n");
-            }
-        }
-        return result.toString().trim();
-    }
-
 }
