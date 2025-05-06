@@ -205,18 +205,20 @@ public class FSM implements Serializable{
             return "Error: Initial state is not set.";
         }
 
+        for(char ch : input.toCharArray()) {
+            char normalized = Character.toLowerCase(ch);
+            if (!symbols.contains(normalized)) {
+                return "Error: Invalid symbol '" + ch + "' not declared in SYMBOLS. ";
+            }
+        }
         String currentState = initialState;
         result.append(currentState);
 
         for (char charList : input.toCharArray()) {
             char normalized = Character.toLowerCase(charList);
-            if (!symbols.contains(normalized)) {
-                result.append("\nError: Invalid symbol '" + charList + "' not declared in SYMBOLS.\nNO");
-                return result.toString();
-            }
             Map<Character, String> transitionMap = transitions.get(currentState);
             if (transitionMap == null || !transitionMap.containsKey(normalized)) {
-                result.append("\nError: No transition for symbol '" + normalized + "' from state '" + currentState + "'\nNO");
+                result.append("\nError: No transitions defined from state '" + currentState);
                 return result.toString();
             }
 
