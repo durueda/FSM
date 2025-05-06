@@ -11,23 +11,29 @@ public class Logger {
         this.writer = null;
         this.isLogging = false;
     }
-
-    public void startLogging(String fileName) {
-        stopLogging();
+    public String startLogging(String fileName) {
+        stopLogging(); // Close if already open
         try {
+            if (fileName == null || fileName.trim().isEmpty() || !fileName.endsWith(".log") || fileName.length() < 5) {
+                return "Error: File cannot be created.";
+            }
+
             writer = new PrintWriter(new BufferedWriter(new FileWriter(fileName, true)));
             isLogging = true;
+            return "Logging started to " + fileName;
         } catch (IOException e) {
-            System.err.println("Logger Error: Unable to open file for logging -> " + fileName);
+            return "Error: File cannot be created.";
         }
     }
-
-    public void stopLogging() {
-        if (writer != null) {
-            writer.close();
-            writer = null;
+    public String stopLogging() {
+        if (!isLogging || writer == null) {
+            return "Error: Logging was not enabled.";
         }
+
+        writer.close();
+        writer = null;
         isLogging = false;
+        return "Stopped logging.";
     }
 
     public void log(String commandLine, String output) {
@@ -45,4 +51,7 @@ public class Logger {
     public boolean isLogging() {
         return isLogging;
     }
+
+
+
 }
