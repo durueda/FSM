@@ -19,7 +19,10 @@ public class CommandHandler {
         //We check if there is a ';' in the command line coming from the user.
         if (commentIndex != -1) {
             commandLine = commandLine.substring(0, commentIndex);
-        }/* If ';' is found, we only take the part up to that point.
+        } else {
+            return "Error: Command must end with a semicolon (;)";
+        }
+        /* If ';' is found, we only take the part up to that point.
          In this way, the text after the comment (; post) is canceled.*/
 
         String[] parts = commandLine.trim().split("\\s+", 2);
