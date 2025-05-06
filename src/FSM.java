@@ -75,8 +75,6 @@ public class FSM implements Serializable{
             } else {
                 System.out.println("Warning: Initial state was previously set to " + initialState + ".");
             }
-        } else {
-            System.out.println("Initial state set to " + normalized);
         }
 
         initialState = normalized;

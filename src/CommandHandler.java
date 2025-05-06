@@ -54,6 +54,7 @@ public class CommandHandler {
                     return "Error: No initial state provided.";
                 } else {
                     fsm.setInitialState(args);
+                    return "Initial state set to " + args.toUpperCase();
                 }
             case "FINAL-STATES":
                 if (args.isEmpty()) {
