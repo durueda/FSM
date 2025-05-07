@@ -204,12 +204,19 @@ public class FSM implements Serializable{
         if (initialState == null) {
             return "Error: Initial state is not set.";
         }
-
+        List<Character> invalidSymbols = new ArrayList<>();
         for(char ch : input.toCharArray()) {
             char normalized = Character.toLowerCase(ch);
             if (!symbols.contains(normalized)) {
-                return "Error: Invalid symbol '" + ch + "' not declared in SYMBOLS. ";
+                invalidSymbols.add(ch);
             }
+        }
+        if (!invalidSymbols.isEmpty()) {
+            result.append("This/These symbols is/are not declared in SYMBOLS:");
+            for (char ch : invalidSymbols) {
+                result.append(" '").append(ch).append("'");
+            }
+            return result.toString();
         }
         String currentState = initialState;
         result.append(currentState);
