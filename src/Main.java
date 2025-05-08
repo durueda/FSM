@@ -4,61 +4,65 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         //Opening Message
-        System.out.println("FSM DESIGNER 1.0 "+ LocalDateTime.now());
+        System.out.println("FSM DESIGNER 1.0" + LocalDateTime.now());
 
         //Creating Objects
         FSM fsm = new FSM();
         Logger logger = new Logger();
         CommandHandler commands = new CommandHandler(fsm,logger);
 
-        //For command files:
+        //For files:
         if(args.length == 1) {
             String fileName = args[0];
             try(BufferedReader reader = new BufferedReader(new FileReader(fileName))){
                 String line;
                 int lineNumber = 0;
-                StringBuilder transitionBuffer = new StringBuilder();
-                boolean collectingTransitions = false;
+                StringBuilder commandBuffer = new StringBuilder();
+                boolean isCollectingCommand = false;
                 while ((line = reader.readLine()) != null) {
                     lineNumber++;
                     line = line.trim();
-                    if (line.trim().isEmpty()) continue;
+                    if (line.isEmpty()) continue;
 
-                    if (collectingTransitions) {
-                        transitionBuffer.append(" ").append(line);
+                    if (!isCollectingCommand) {
                         if (line.endsWith(";")) {
-                            String fullCommand = transitionBuffer.toString();
-                            System.out.println("> " + fullCommand);
-                            String reply = commands.processCommand(fullCommand);
-                            logger.log(fullCommand, reply);
+                            //For one line commands
+                            System.out.println("> " + line);
+                            String reply = commands.processCommand(line);
+                            logger.log(line, reply);
                             if (reply != null && !reply.trim().isEmpty()) {
                                 System.out.println(reply);
                             }
-                            collectingTransitions = false;
-                            transitionBuffer.setLength(0);
+                        } else {
+                            //Multi-Line
+                            isCollectingCommand = true;
+                            commandBuffer.append(line);
                         }
-                        continue;
+                    } else {
+                        commandBuffer.append(" ").append(line);
+                        if (line.endsWith(";")) {
+                            String fullCommand = commandBuffer.toString();
+                            System.out.println("> " + fullCommand);
+                            String reply = commands.processCommand(fullCommand);
+                            logger.log(fullCommand, reply);
+                            if(reply != null && !reply.trim().isEmpty()) {
+                                System.out.println(reply);
+                            }
+                            commandBuffer.setLength(0);
+                            isCollectingCommand = false;
+                        }
                     }
-                    //For Multiple Transition Cases
-                    if (line.toUpperCase().startsWith("TRANSITIONS") && !line.endsWith(";")) {
-                        collectingTransitions = true;
-                        transitionBuffer.append(line);
-                        continue;
-                    }
-                    System.out.println("> " + line);
-                    String reply = commands.processCommand(line);
-                    logger.log(line, reply);
-                    if (reply != null && !reply.trim().isEmpty()) {
-                        System.out.println(reply);
-                    }
-
                     if (line.trim().equalsIgnoreCase("EXIT;")) {
                         return;
                     }
                 }
+                if (isCollectingCommand) {
+                    System.out.println("Error: Unterminated command at line " + lineNumber);
+                }
             } catch (IOException e) {
                 System.out.println("Error reading file: " + e.getMessage());
             }
+            return;
         }
         //Command Line Interaction
         Scanner sc = new Scanner(System.in);
