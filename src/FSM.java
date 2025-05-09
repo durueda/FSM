@@ -24,11 +24,12 @@ public class FSM implements Serializable{
     }
     public void setSymbols(List<String> inputSymbols) {
         for (String sym : inputSymbols) {
+            // Validate symbol: single alphanumeric character only
             if (sym.length() != 1 || !Character.isLetterOrDigit(sym.charAt(0))) {
                 System.out.println("Warning: invalid symbol " + sym);
                 continue;
             }
-
+            // Normalize to lowercase and add to symbol set
             char symbol = Character.toLowerCase(sym.charAt(0));
             if (!symbols.add(symbol)) {
                 System.out.println("Warning: " + symbol + " was already declared as a symbol");
@@ -37,16 +38,17 @@ public class FSM implements Serializable{
     }
     public void setStates(List<String> inputStates) {
         for (String st : inputStates) {
+            // Validate state: must be alphanumeric
             if (!st.matches("[a-zA-Z0-9]+")) {
                 System.out.println("Warning: invalid state " + st);
                 continue;
             }
-
+            // Normalize to uppercase and add to state set
             String state = st.toUpperCase();
             if (!states.add(state)) {
                 System.out.println("Warning: " + state + " was already declared as a state");
             }
-
+            // Set the first declared state as initial if none set (FR7)
             if (initialState == null) {
                 initialState = state;
             }
@@ -56,18 +58,19 @@ public class FSM implements Serializable{
     update collections in FSM, manage warnings in FR5 and FR6.*/
 
     public void setInitialState(String state) {
+        // Validate state: must be alphanumeric
         if (!state.matches("[a-zA-Z0-9]+")) {
             System.out.println("Warning: Invalid state name " + state);
             return;
         }
-
+        // Normalize to uppercase and add if not present
         String normalized = state.toUpperCase();
 
         if (!states.contains(normalized)) {
             System.out.println("Warning: " + normalized + " was not previously declared as a state");
             states.add(normalized);
         }
-
+        // Update initial state, warn if already set (FR7)
         if (initialState != null) {
             if (initialState.equals(normalized)) {
                 System.out.println("Warning: Initial state is already set to " + initialState + ".");
@@ -83,17 +86,18 @@ public class FSM implements Serializable{
 
     public void setFinalStates(List<String> inputStates) {
         for (String st : inputStates) {
+            // Validate state: must be alphanumeric
             if (!st.matches("[a-zA-Z0-9]+")) {
                 System.out.println("Warning: Invalid state name " + st);
                 continue;
             }
-
+            // Normalize to uppercase and add if not present
             String state = st.toUpperCase();
             if (!states.contains(state)) {
                 System.out.println("Warning: " + state + " was not previously declared as a state");
                 states.add(state);
             }
-
+            // Add to final states set
             if (!finalStates.add(state)) {
                 System.out.println("Warning: " + state + " was already declared as a final state");
             }
@@ -185,8 +189,6 @@ public class FSM implements Serializable{
         return printString.toString();
     }
     //A code that complies with FR10
-    //print() can write to both file and screen
-    //If filename == null or empty, it writes to System.out (screen), otherwise it writes to file.
 
     public void clear() {
         symbols.clear();
