@@ -1,17 +1,15 @@
 import java.io.*;
 import java.time.LocalDateTime;
-import java.util.Scanner;
+import java.util.*;
+
 public class Main {
     public static void main(String[] args) {
-        //Opening Message
         System.out.println("FSM DESIGNER 1.0" + LocalDateTime.now());
 
-        //Creating Objects
         FSM fsm = new FSM();
         Logger logger = new Logger();
         CommandHandler commands = new CommandHandler(fsm,logger);
 
-        //For files:
         if(args.length == 1) {
             String fileName = args[0];
             try(BufferedReader reader = new BufferedReader(new FileReader(fileName))){
@@ -19,43 +17,68 @@ public class Main {
                 int lineNumber = 0;
                 StringBuilder commandBuffer = new StringBuilder();
                 boolean isCollectingCommand = false;
+                String currentCommandKeyword = "";
+                List<String> multiLineCommands = Arrays.asList("SYMBOLS", "STATES", "INITIAL-STATE", "FINAL-STATES", "TRANSITIONS");
+
                 while ((line = reader.readLine()) != null) {
                     lineNumber++;
                     line = line.trim();
                     if (line.isEmpty()) continue;
 
-                    if (!isCollectingCommand) {
-                        if (line.endsWith(";")) {
-                            //For one line commands
-                            System.out.println("> " + line);
-                            String reply = commands.processCommand(line);
-                            logger.log(line, reply);
-                            if (reply != null && !reply.trim().isEmpty()) {
-                                System.out.println(reply);
-                            }
-                        } else {
-                            //Multi-Line
-                            isCollectingCommand = true;
-                            commandBuffer.append(line);
-                        }
-                    } else {
+                    // Multi-line continuation
+                    if (isCollectingCommand) {
                         commandBuffer.append(" ").append(line);
-                        if (line.endsWith(";")) {
+                        if (line.contains(";")) {
                             String fullCommand = commandBuffer.toString();
-                            System.out.println("> " + fullCommand);
-                            String reply = commands.processCommand(fullCommand);
-                            logger.log(fullCommand, reply);
+                            int semiIndex = fullCommand.indexOf(';');
+                            String executable = fullCommand.substring(0, semiIndex + 1);
+                            System.out.println("> " + executable);
+                            String reply = commands.processCommand(executable);
+                            logger.log(executable, reply);
                             if(reply != null && !reply.trim().isEmpty()) {
                                 System.out.println(reply);
                             }
                             commandBuffer.setLength(0);
                             isCollectingCommand = false;
                         }
+                        continue;
                     }
-                    if (line.trim().equalsIgnoreCase("EXIT;")) {
-                        return;
+
+                    // One-line command with semicolon
+                    if (line.contains(";")) {
+                        int semiIndex = line.indexOf(';');
+                        String commandPart = line.substring(0, semiIndex + 1).trim();
+                        System.out.println("> " + commandPart);
+                        String reply = commands.processCommand(commandPart);
+                        logger.log(commandPart, reply);
+                        if (reply != null && !reply.trim().isEmpty()) {
+                            System.out.println(reply);
+                        }
+                        if (commandPart.trim().equalsIgnoreCase("EXIT;")) {
+                            return;
+                        }
+                        continue;
+                    }
+
+                    // Line without semicolon — either invalid or start of multi-line
+                    String[] parts = line.split("\\s+", 2);
+                    String firstWord = parts[0].toUpperCase();
+
+                    if (multiLineCommands.contains(firstWord)) {
+                        // Begin multi-line collection
+                        isCollectingCommand = true;
+                        commandBuffer.append(line);
+                    } else {
+                        // Invalid command or missing semicolon
+                        System.out.println("> " + line);
+                        String reply = commands.processCommand(line);
+                        logger.log(line, reply);
+                        if(reply != null && !reply.trim().isEmpty()) {
+                            System.out.println(reply);
+                        }
                     }
                 }
+
                 if (isCollectingCommand) {
                     System.out.println("Error: Unterminated command at line " + lineNumber);
                 }
@@ -64,14 +87,13 @@ public class Main {
             }
             return;
         }
-        //Command Line Interaction
+
         Scanner sc = new Scanner(System.in);
         while(true){
             System.out.print("? ");
             String input = sc.nextLine();
             String reply = commands.processCommand(input);
 
-            //logger
             logger.log(input,reply);
 
             if(reply != null && !reply.trim().isEmpty()){
