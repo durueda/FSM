@@ -47,11 +47,4 @@ public class Logger {
         }
         writer.flush();
     }
-
-    public boolean isLogging() {
-        return isLogging;
-    }
-
-
-
 }

@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("FSM DESIGNER 1.0" + LocalDateTime.now());
+        System.out.println("FSM DESIGNER <dad96a2> " + LocalDateTime.now());
 
         FSM fsm = new FSM();
         Logger logger = new Logger();
@@ -17,7 +17,6 @@ public class Main {
                 int lineNumber = 0;
                 StringBuilder commandBuffer = new StringBuilder();
                 boolean isCollectingCommand = false;
-                String currentCommandKeyword = "";
                 List<String> multiLineCommands = Arrays.asList("SYMBOLS", "STATES", "INITIAL-STATE", "FINAL-STATES", "TRANSITIONS");
 
                 while ((line = reader.readLine()) != null) {

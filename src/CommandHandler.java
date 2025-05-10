@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 public class CommandHandler {
-    private FSM fsm;
-    private Logger logger;
+    private final FSM fsm;
+    private final Logger logger;
 
     public CommandHandler(FSM fsm, Logger logger) {
         this.fsm = fsm;

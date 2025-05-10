@@ -227,7 +227,7 @@ public class FSM implements Serializable{
             char normalized = Character.toLowerCase(charList);
             Map<Character, String> transitionMap = transitions.get(currentState);
             if (transitionMap == null || !transitionMap.containsKey(normalized)) {
-                result.append("\nError: No transitions defined from state '" + currentState);
+                result.append("\nError: No transitions defined from state '").append(currentState);
                 return result.toString();
             }
 
